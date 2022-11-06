@@ -1,6 +1,9 @@
 $(document).ready(onReady);
 
+// This string is for tracking the current value (the one currently displayed on the calculator screen)
 let currentNumber = '';
+
+// This object will be sent to the server.
 let expressionToSend = {
     num1: '',
     num2: '',
@@ -8,6 +11,7 @@ let expressionToSend = {
 };
 
 function onReady() {
+    // Setting the buttons
     $('.number').on('click', addNumber);
     $('.operator').on('click', setOperation);
     $('#decimalpoint').on('click', addDecimalPoint);
@@ -18,27 +22,32 @@ function onReady() {
     $('#history').on('click', '.answer', clickHistory);
     $('#clearHistory').on('click', clearHistory);
 
-    // load history
+    // On page load, display history
     render();
 }
 
 function backspace(){
-    // undo one character
+    // Undo one character
+    // Base case: if currentNumber is empty or only has one character,
+    // we can just set it to an empty string. No need to do anything fancy
     if (currentNumber.length === 0 || currentNumber.length === 1){
         currentNumber = '';
     } else {
+        // Otherwise we subtract the last digit.
         currentNumber = currentNumber.slice(0, currentNumber.length - 1);
     }
+    // Update num1 or num2 to reflect the change.
     if (expressionToSend.num1 !== '' && expressionToSend.num2 !== '' && expressionToSend.operator !== ''){
         expressionToSend.num2 = currentNumber;
     } else {
         expressionToSend.num1 = currentNumber;
     }
+    // Update the display on the calculator.
     $('input').val(currentNumber);
 }
 
 function clear(){
-    // clears the expression.
+    // Clears the whole expression and display.
     expressionToSend.num1 = '';
     expressionToSend.num2 = '';
     expressionToSend.operator = '';
@@ -48,23 +57,25 @@ function clear(){
 }
 
 function clickHistory(){
-    console.log($(this).data('ans'));
-
-    // evaluate expression again
+    // "Evaluate" the expression again
+    // Really we're just taking the answer (that has been conveniently stored as data in the list item)
+    // setting num1 = the answer, and displaying it on the calculator screen.
     expressionToSend.num1 = String($(this).data('ans'));
     expressionToSend.num2 = '';
     expressionToSend.operator = '';
     currentNumber = String($(this).data('ans'));
+    // Set calculator display
     $('input').val(currentNumber);
 
 }
 
 function clearHistory(){
+    // DELETE for clearing the history
     $.ajax({
         url: '/expression',
         type: 'DELETE',
         success: function (result) {
-            console.log('Successfully cleared history');
+            // Call render after it's done
             render();
         }
     });
@@ -73,21 +84,23 @@ function clearHistory(){
 function addNumber() {
     // Add to current number
     currentNumber += $(this).text();
+    // Setting either num1 or num2 depending on whether an operator has been set or not
     if (expressionToSend.operator === ''){
         expressionToSend.num1 = currentNumber;
     } else {
         expressionToSend.num2 = currentNumber;
     }
+    // Set calculator display
     $('input').val(currentNumber);
 
 }
 
 function addDecimalPoint() {
-    // check if string is empty
+    // Check if string is empty
     if (currentNumber === ''){
         currentNumber += '0.';
     } else if (currentNumber.charAt(currentNumber.length - 1) !== '.'){
-        // add decimal point
+        // Add decimal point
         currentNumber += '.';
     }
     // otherwise do nothing.
@@ -96,20 +109,21 @@ function addDecimalPoint() {
 }
 
 function setOperation() {
+    // The subtract button also functions as a negative sign. I check for that first
     if ($(this).text() === '-' && currentNumber === ''){
-        // Negative sign
+        // Add negative sign
         currentNumber = '-';
         $('input').val(currentNumber);
     } else if (expressionToSend.num1 !== '' && expressionToSend.num2 !== '' && expressionToSend.operator !== ''){
-        // if all fields are already filled out, then evaluate expression, 
-        // reset expressionToSend, set num1 to result of evaluated expression,
-        // and set operator to the selected operator.
+        // If all fields are already filled out, then go ahead with evaluating the expression.
         currentNumber = '';
         $('.operator').prop('disabled', true);
         evaluateExpression();
+        // Expression has been evaluated and the answer has been set to num1.
+        // Now we can set the operator.
         expressionToSend.operator = $(this).text();
     } else if (expressionToSend.num1 !== ''){
-        // Set operator
+        // Set operator.
         currentNumber = '';
         $('.operator').prop('disabled', true);
         expressionToSend.operator = $(this).text();
@@ -117,18 +131,20 @@ function setOperation() {
 }
 
 function getEvaluatedExpression(){
+    // GET the evaluated expression from the server.
     $.ajax({
         method: 'GET',
         url: '/expression'
     }).then(function(response) {
-        // reset expressionToSend 
+        // Reset expressionToSend 
         expressionToSend.num2 = '';
-        $('.operator').prop('disabled', false);
         expressionToSend.operator = '';
-        // set num1 and currentNumber to result of evaluated expression
+        // Enable operator buttons again.
+        $('.operator').prop('disabled', false);
+        // Set num1 and currentNumber to result of evaluated expression
         expressionToSend.num1 = response.num;
         currentNumber = String(response.num);
-        // display answer on calculator screen
+        // Display answer on calculator screen
         $('input').val(response.num);
         // Call render
         render();
@@ -138,7 +154,7 @@ function getEvaluatedExpression(){
 }
 
 function evaluateExpression() {
-    // check if all fields are filled in
+    // First check if all fields are filled in.
     if (expressionToSend.num1 !== '' && expressionToSend.num2 !== '' && expressionToSend.operator !== ''){
         // POST the expression to the server.
         $.ajax({
@@ -164,8 +180,9 @@ function render() {
         method: 'GET',
         url: '/history'
     }).then(function(response) {
-        // set history array to response
+        // Set history array to response
         history = response;
+        // Loop through history array
         for (let item of history){
             let num = item.slice(item.indexOf('=') + 2, item.length);
             $('#history').append(`

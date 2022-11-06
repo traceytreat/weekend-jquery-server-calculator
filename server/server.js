@@ -8,63 +8,67 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static('server/public'));
 
+// The object to be passed back to client.
 let answer = {
     answerString: '',
     num: 0,
 };
 
+// The array for history of calculations.
 let history = [];
 
 // GET for /expression
 app.get('/expression', (req, res) => {
-    // send the answer to the client
+    // Send the answer to the client
     res.send(answer);
 });
 
+// GET for /history
 app.get('/history', (req, res) => {
     res.send(history);
 });
 
+// POST for /expression
 app.post('/expression', (req, res) => {
-    console.log('in post expression');
     let expression = req.body;
     // properties of expression:
     // num1, num2, operator
 
-    // set answer to blank
+    // Set answer to blank
     answer.answerString = '';
     answer.num = '';
 
-    // evaluate the expression
-    console.log('the operator',expression.operator);
+    // Evaluate the expression
+    // Check operator symbol
     if (expression.operator === '+'){
-        console.log('adding');
         answer.num = Number(expression.num1) + Number(expression.num2);
     } else if (expression.operator === '-'){
-        console.log('subtracting');
         answer.num = Number(expression.num1) - Number(expression.num2);
     } else if (expression.operator === '*'){ 
-        console.log('multiplying');
         answer.num = Number(expression.num1) * Number(expression.num2);
     } else if (expression.operator === '/'){
-        console.log('dividing');
         answer.num = Number(expression.num1) / Number(expression.num2);
     } else {
         console.log('Error with calculation - this shouldn\'t happen');
     }
+
+    // Make a string of the expression plus the answer. 
+    // This is what is going to be displayed in the history list on the DOM.
     answer.answerString = expression.num1 + ' ' + expression.operator + ' ' + expression.num2 + ' = ' + answer.num;
-    // push answer to history
+    // Push answer to history array
     history.push(answer.answerString);
     res.sendStatus(201);
 });
 
+// DELETE for /expression
 app.delete('/expression', (req, res) => {
+    // Delete history (set history array to empty)
     history = [];
     res.sendStatus(201);
 
 })
 
-//The port where this is listening from. 
+// The port where this is listening from. 
 app.listen(PORT, () => {
     console.log('Server is running on port', PORT)
   })
