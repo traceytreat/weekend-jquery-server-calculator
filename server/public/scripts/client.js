@@ -99,7 +99,7 @@ function addDecimalPoint() {
     // Check if string is empty
     if (currentNumber === ''){
         currentNumber += '0.';
-    } else if (currentNumber.charAt(currentNumber.length - 1) !== '.'){
+    } else if (!currentNumber.includes('.')){
         // Add decimal point
         currentNumber += '.';
     }
