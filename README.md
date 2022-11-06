@@ -27,6 +27,7 @@ You need:
 6. Click the C button to clear the current expression
 7. Click on any expression in the history to calculate it again
 8. Clear the history by clicking Clear History
+9. When you're finished, close the server with Ctrl + C in the terminal
 
 You can hover over each button for a description in english (i.e. hovering over the 7 button should show "Seven")
 
