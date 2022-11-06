@@ -8,19 +8,19 @@ The calculations are done in the server. A history of all calculations is also s
 
 It's supposed to simulate a real calculator with buttons so no keyboard input-- just click the buttons.
 
-### Prerequisites
+## Prerequisites
 
 You need:
 - node.js
 - express
 
-### Installation
+## Installation
 1. Clone the repo
 2. Open terminal and navigate to the cloned repo
 3. Run npm init --yes
 4. Run npm install express
 
-### Usage
+## Usage
 1. To start server, run npm start
 2. Visit localhost:5000 in your browser
 3. Click the buttons on the calculator
@@ -33,12 +33,12 @@ You need:
 
 You can hover over each button for a description in english (i.e. hovering over the 7 button should show "Seven")
 
-### Known issues
+## Known issues
 There may be issues with accuracy when performing operations on decimals (i.e. 1.4 minus 1 shows up as 0.399999999999 when it should be 0.4)
 
 This is a known issue with how computers store decimal numbers.
 
 There are libraries that fix this problem but I decided to leave it as-is for now
 
-### Acknowledgment
+## Acknowledgment
 Thanks Prime and Shawl!
