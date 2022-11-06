@@ -17,11 +17,11 @@ You need:
 ## Installation
 1. Clone the repo
 2. Open terminal and navigate to the cloned repo
-3. Run npm init --yes
-4. Run npm install express
+3. Run `npm init --yes`
+4. Run `npm install express`
 
 ## Usage
-1. To start server, run npm start
+1. To start server, run `npm start`
 2. Visit localhost:5000 in your browser
 3. Click the buttons on the calculator
 4. To evaluate expression, click the = button
@@ -42,3 +42,4 @@ There are libraries that fix this problem but I decided to leave it as-is for no
 
 ## Acknowledgment
 Thanks Prime and Shawl!
+Font used: [Digital 7](https://www.dafont.com/digital-7.font)
