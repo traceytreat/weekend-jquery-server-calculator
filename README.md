@@ -42,4 +42,5 @@ There are libraries that fix this problem but I decided to leave it as-is for no
 
 ## Acknowledgment
 Thanks Prime and Shawl!
-Font used: [Digital 7](https://www.dafont.com/digital-7.font)
+
+I used a custom font for the calculator. Font used: [Digital 7](https://www.dafont.com/digital-7.font)
