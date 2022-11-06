@@ -3,7 +3,9 @@
 ## Description
 
 This project functions as a basic calculator with add, subtract, multiply, and divide operations.
+
 The calculations are done in the server. A history of all calculations is also saved in the server.
+
 It's supposed to simulate a real calculator with buttons so no keyboard input-- just click the buttons.
 
 ### Prerequisites
@@ -33,7 +35,9 @@ You can hover over each button for a description in english (i.e. hovering over 
 
 ### Known issues
 There may be issues with accuracy when performing operations on decimals (i.e. 1.4 minus 1 shows up as 0.399999999999 when it should be 0.4)
+
 This is a known issue with how computers store decimal numbers.
+
 There are libraries that fix this problem but I decided to leave it as-is for now
 
 ### Acknowledgment
