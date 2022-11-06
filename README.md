@@ -11,9 +11,9 @@ It's supposed to simulate a real calculator with buttons so no keyboard input-- 
 ## Prerequisites
 
 You need:
-- node.js
-- express
-- body-parser
+- [node.js](https://nodejs.org/en/download/) Download this if you haven't already
+- express (installed with npm install)
+- body-parser (installed with npm install)
 
 ## Installation
 1. Clone the repo
