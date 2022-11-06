@@ -23,3 +23,13 @@ button {
     margin: 10px;
     font-size: 35px;
 }
+
+h1, h2, p, #history, #clearHistory {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#clearHistory {
+    width: auto;
+    height: auto;
+    font-size: 12px;
+}

@@ -13,10 +13,16 @@ let answer = {
     num: 0,
 };
 
+let history = [];
+
 // GET for /expression
 app.get('/expression', (req, res) => {
     // send the answer to the client
     res.send(answer);
+});
+
+app.get('/history', (req, res) => {
+    res.send(history);
 });
 
 app.post('/expression', (req, res) => {
@@ -47,9 +53,16 @@ app.post('/expression', (req, res) => {
         console.log('Error with calculation - this shouldn\'t happen');
     }
     answer.answerString = expression.num1 + ' ' + expression.operator + ' ' + expression.num2 + ' = ' + answer.num;
+    // push answer to history
+    history.push(answer.answerString);
     res.sendStatus(201);
 });
 
+app.delete('/expression', (req, res) => {
+    history = [];
+    res.sendStatus(201);
+
+})
 
 //The port where this is listening from. 
 app.listen(PORT, () => {

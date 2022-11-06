@@ -14,9 +14,16 @@ function onReady() {
     $('#backspace').on('click', backspace);
     $('#clear').on('click', clear);
     $('#equals').on('click', evaluateExpression);
+
+    $('#history').on('click', '.answer', clickHistory);
+    $('#clearHistory').on('click', clearHistory);
+
+    // load history
+    render();
 }
 
 function backspace(){
+    // undo one character
     if (currentNumber.length === 0 || currentNumber.length === 1){
         currentNumber = '';
     } else {
@@ -31,30 +38,51 @@ function backspace(){
 }
 
 function clear(){
+    // clears the expression.
     expressionToSend.num1 = '';
     expressionToSend.num2 = '';
     expressionToSend.operator = '';
     currentNumber = '';
+    $('.operator').prop('disabled', false);
     $('input').val('');
+}
+
+function clickHistory(){
+    console.log($(this).data('ans'));
+
+    // evaluate expression again
+    expressionToSend.num1 = String($(this).data('ans'));
+    expressionToSend.num2 = '';
+    expressionToSend.operator = '';
+    currentNumber = String($(this).data('ans'));
+    $('input').val(currentNumber);
+
+}
+
+function clearHistory(){
+    $.ajax({
+        url: '/expression',
+        type: 'DELETE',
+        success: function (result) {
+            console.log('Successfully cleared history');
+            render();
+        }
+    });
 }
 
 function addNumber() {
     // Add to current number
     currentNumber += $(this).text();
-    if (expressionToSend.operator == ''){
-        console.log('adding to num1');
+    if (expressionToSend.operator === ''){
         expressionToSend.num1 = currentNumber;
     } else {
-        console.log('adding to num2');
         expressionToSend.num2 = currentNumber;
     }
     $('input').val(currentNumber);
-    console.log(currentNumber);
 
 }
 
 function addDecimalPoint() {
-    console.log('add decimal point');
     // check if string is empty
     if (currentNumber === ''){
         currentNumber += '0.';
@@ -68,23 +96,24 @@ function addDecimalPoint() {
 }
 
 function setOperation() {
-    if (expressionToSend.num1 !== '' && expressionToSend.num2 !== '' && expressionToSend.operator !== ''){
+    if ($(this).text() === '-' && currentNumber === ''){
+        // Negative sign
+        currentNumber = '-';
+        $('input').val(currentNumber);
+    } else if (expressionToSend.num1 !== '' && expressionToSend.num2 !== '' && expressionToSend.operator !== ''){
         // if all fields are already filled out, then evaluate expression, 
         // reset expressionToSend, set num1 to result of evaluated expression,
         // and set operator to the selected operator.
-        //$('input').val('');
         currentNumber = '';
+        $('.operator').prop('disabled', true);
         evaluateExpression();
         expressionToSend.operator = $(this).text();
     } else if (expressionToSend.num1 !== ''){
         // Set operator
-        //$('input').val('');
         currentNumber = '';
+        $('.operator').prop('disabled', true);
         expressionToSend.operator = $(this).text();
-    } 
-    console.log('num1', expressionToSend.num1);
-    console.log('num2', expressionToSend.num2);
-    console.log('operator', expressionToSend.operator);
+    }
 }
 
 function getEvaluatedExpression(){
@@ -94,6 +123,7 @@ function getEvaluatedExpression(){
     }).then(function(response) {
         // reset expressionToSend 
         expressionToSend.num2 = '';
+        $('.operator').prop('disabled', false);
         expressionToSend.operator = '';
         // set num1 and currentNumber to result of evaluated expression
         expressionToSend.num1 = response.num;
@@ -101,7 +131,7 @@ function getEvaluatedExpression(){
         // display answer on calculator screen
         $('input').val(response.num);
         // Call render
-        render(response);
+        render();
     }).catch(function(error){
         alert('getEvaluatedExpression failure', error);
     });
@@ -125,11 +155,27 @@ function evaluateExpression() {
 
 }
 
-function render(response) {
+function render() {
     // Render to DOM.
-    $('#history').append(`
-        <li class="answer" data-num="${response.num}">
-            ${response.answerString}
-        </li>
-    `);
+    // GET the history array
+    let history = [];
+    $('#history').empty();
+    $.ajax({
+        method: 'GET',
+        url: '/history'
+    }).then(function(response) {
+        // set history array to response
+        history = response;
+        for (let item of history){
+            let num = item.slice(item.indexOf('=') + 2, item.length);
+            $('#history').append(`
+            <li class="answer" data-ans='${num}'>
+                ${item}
+            </li>
+        `);
+    }
+    }).catch(function(error){
+        alert('get history array failure', error);
+    });
+
 }
