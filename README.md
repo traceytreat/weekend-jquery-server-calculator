@@ -13,12 +13,13 @@ It's supposed to simulate a real calculator with buttons so no keyboard input-- 
 You need:
 - node.js
 - express
+- body-parser
 
 ## Installation
 1. Clone the repo
 2. Open terminal and navigate to the cloned repo
 3. Run `npm init --yes`
-4. Run `npm install express`
+4. Run `npm install`
 
 ## Usage
 1. To start server, run `npm start`
